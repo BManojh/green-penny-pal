@@ -164,6 +164,405 @@ export type Database = {
         }
         Relationships: []
       }
+      financial_transactions: {
+        Row: {
+          id: string
+          user_id: string
+          type: "income" | "expense"
+          category: string
+          amount: number
+          description: string
+          date: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          type: "income" | "expense"
+          category: string
+          amount: number
+          description: string
+          date?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          type?: "income" | "expense"
+          category?: string
+          amount?: number
+          description?: string
+          date?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      budgets: {
+        Row: {
+          id: string
+          user_id: string
+          category: string
+          monthly_limit: number
+          spent: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          category: string
+          monthly_limit: number
+          spent?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          category?: string
+          monthly_limit?: number
+          spent?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budgets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      financial_goals: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          target_amount: number
+          current_amount: number
+          target_date: string
+          category: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          target_amount: number
+          current_amount?: number
+          target_date: string
+          category: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          target_amount?: number
+          current_amount?: number
+          target_date?: string
+          category?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_goals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_profiles: {
+        Row: {
+          id: string
+          username: string
+          display_name: string | null
+          avatar_url: string | null
+          bio: string | null
+          eco_score: number
+          level: number
+          co2_saved: number
+          streak_days: number
+          badges: Json
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          username: string
+          display_name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          eco_score?: number
+          level?: number
+          co2_saved?: number
+          streak_days?: number
+          badges?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          username?: string
+          display_name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          eco_score?: number
+          level?: number
+          co2_saved?: number
+          streak_days?: number
+          badges?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      community_challenges: {
+        Row: {
+          id: string
+          title: string
+          description: string
+          category: string
+          goal: number
+          current_progress: number
+          reward: string
+          start_date: string
+          end_date: string
+          is_active: boolean
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          description: string
+          category: string
+          goal: number
+          current_progress?: number
+          reward: string
+          start_date?: string
+          end_date: string
+          is_active?: boolean
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string
+          category?: string
+          goal?: number
+          current_progress?: number
+          reward?: string
+          start_date?: string
+          end_date?: string
+          is_active?: boolean
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      challenge_participants: {
+        Row: {
+          id: string
+          challenge_id: string
+          user_id: string
+          progress: number
+          joined_at: string
+          completed_at: string | null
+        }
+        Insert: {
+          id?: string
+          challenge_id: string
+          user_id: string
+          progress?: number
+          joined_at?: string
+          completed_at?: string | null
+        }
+        Update: {
+          id?: string
+          challenge_id?: string
+          user_id?: string
+          progress?: number
+          joined_at?: string
+          completed_at?: string | null
+        }
+        Relationships: []
+      }
+      community_posts: {
+        Row: {
+          id: string
+          user_id: string
+          content: string
+          post_type: string
+          achievement_data: Json | null
+          activity_data: Json | null
+          image_url: string | null
+          likes_count: number
+          comments_count: number
+          is_public: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          content: string
+          post_type?: string
+          achievement_data?: Json | null
+          activity_data?: Json | null
+          image_url?: string | null
+          likes_count?: number
+          comments_count?: number
+          is_public?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          content?: string
+          post_type?: string
+          achievement_data?: Json | null
+          activity_data?: Json | null
+          image_url?: string | null
+          likes_count?: number
+          comments_count?: number
+          is_public?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      post_likes: {
+        Row: {
+          id: string
+          post_id: string
+          user_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          post_id: string
+          user_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          post_id?: string
+          user_id?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      post_comments: {
+        Row: {
+          id: string
+          post_id: string
+          user_id: string
+          content: string
+          parent_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          post_id: string
+          user_id: string
+          content: string
+          parent_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          post_id?: string
+          user_id?: string
+          content?: string
+          parent_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_friendships: {
+        Row: {
+          id: string
+          user_id: string
+          friend_id: string
+          status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          friend_id: string
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          friend_id?: string
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          id: string
+          user_id: string
+          achievement_type: string
+          achievement_title: string
+          achievement_description: string | null
+          achievement_icon: string | null
+          earned_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          achievement_type: string
+          achievement_title: string
+          achievement_description?: string | null
+          achievement_icon?: string | null
+          earned_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          achievement_type?: string
+          achievement_title?: string
+          achievement_description?: string | null
+          achievement_icon?: string | null
+          earned_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

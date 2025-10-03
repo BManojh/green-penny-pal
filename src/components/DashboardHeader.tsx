@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
 import { Leaf, TrendingUp, Sprout, LogOut } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { useUserStats } from "@/hooks/useUserStats";
 
 interface DashboardHeaderDBProps {
   userId: string;
@@ -10,40 +9,18 @@ interface DashboardHeaderDBProps {
 }
 
 export const DashboardHeader = ({ userId, onSignOut }: DashboardHeaderDBProps) => {
-  const [stats, setStats] = useState({
-    ecoScore: 0,
-    financeScore: 0,
-    treesSaved: 0,
-    co2Reduced: 0,
-    moneySaved: 0,
-  });
+  const { 
+    totalCO2Saved, 
+    totalMoneySaved, 
+    totalActivities, 
+    currentLevel,
+    loading 
+  } = useUserStats(userId);
 
-  useEffect(() => {
-    fetchStats();
-  }, [userId]);
-
-  const fetchStats = async () => {
-    const { data, error } = await supabase
-      .from("activities")
-      .select("co2_impact, financial_impact")
-      .eq("user_id", userId);
-
-    if (error || !data) return;
-
-    const totalCO2 = data.reduce((sum, a) => sum + a.co2_impact, 0);
-    const totalSavings = data.reduce((sum, a) => sum + a.financial_impact, 0);
-    const treesSaved = Math.floor(totalCO2 / 12);
-    const ecoScore = Math.min(100, data.length * 5 + treesSaved);
-    const financeScore = Math.min(100, Math.floor(totalSavings / 50));
-
-    setStats({
-      ecoScore,
-      financeScore,
-      treesSaved,
-      co2Reduced: totalCO2,
-      moneySaved: totalSavings,
-    });
-  };
+  // Calculate derived stats from real data
+  const treesSaved = Math.floor(totalCO2Saved / 12); // 1 tree = ~12kg CO2/year
+  const ecoScore = Math.min(100, totalActivities * 5 + treesSaved);
+  const financeScore = Math.min(100, Math.floor(totalMoneySaved / 50));
 
   return (
     <div className="space-y-6">
@@ -67,11 +44,11 @@ export const DashboardHeader = ({ userId, onSignOut }: DashboardHeaderDBProps) =
           <div className="flex items-center justify-between">
             <div>
               <p className="text-primary-foreground/80 text-sm font-medium">Eco Score</p>
-              <p className="text-4xl font-bold text-primary-foreground mt-1">{stats.ecoScore}</p>
+              <p className="text-4xl font-bold text-primary-foreground mt-1">{loading ? '...' : ecoScore}</p>
               <div className="flex items-center gap-2 mt-2">
                 <Leaf className="h-4 w-4 text-primary-foreground/80" />
                 <span className="text-primary-foreground/90 text-sm">
-                  {stats.treesSaved} trees saved
+                  {treesSaved} trees saved
                 </span>
               </div>
             </div>
@@ -86,12 +63,12 @@ export const DashboardHeader = ({ userId, onSignOut }: DashboardHeaderDBProps) =
             <div>
               <p className="text-secondary-foreground/80 text-sm font-medium">Finance Score</p>
               <p className="text-4xl font-bold text-secondary-foreground mt-1">
-                {stats.financeScore}
+                {loading ? '...' : financeScore}
               </p>
               <div className="flex items-center gap-2 mt-2">
                 <TrendingUp className="h-4 w-4 text-secondary-foreground/80" />
                 <span className="text-secondary-foreground/90 text-sm">
-                  ₹{stats.moneySaved.toFixed(0)} saved
+                  ₹{totalMoneySaved.toFixed(0)} saved
                 </span>
               </div>
             </div>
@@ -109,7 +86,7 @@ export const DashboardHeader = ({ userId, onSignOut }: DashboardHeaderDBProps) =
               <Leaf className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{stats.treesSaved}</p>
+              <p className="text-2xl font-bold text-foreground">{loading ? '...' : treesSaved}</p>
               <p className="text-sm text-muted-foreground">Trees Saved</p>
             </div>
           </div>
@@ -121,7 +98,7 @@ export const DashboardHeader = ({ userId, onSignOut }: DashboardHeaderDBProps) =
               <Sprout className="h-6 w-6 text-accent" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{stats.co2Reduced.toFixed(1)}kg</p>
+              <p className="text-2xl font-bold text-foreground">{loading ? '...' : totalCO2Saved.toFixed(1)}kg</p>
               <p className="text-sm text-muted-foreground">CO₂ Reduced</p>
             </div>
           </div>
@@ -133,7 +110,7 @@ export const DashboardHeader = ({ userId, onSignOut }: DashboardHeaderDBProps) =
               <TrendingUp className="h-6 w-6 text-secondary" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">₹{stats.moneySaved.toFixed(0)}</p>
+              <p className="text-2xl font-bold text-foreground">₹{loading ? '...' : totalMoneySaved.toFixed(0)}</p>
               <p className="text-sm text-muted-foreground">Money Saved</p>
             </div>
           </div>
